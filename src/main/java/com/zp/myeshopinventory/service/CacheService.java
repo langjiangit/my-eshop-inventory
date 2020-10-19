@@ -1,6 +1,8 @@
 package com.zp.myeshopinventory.service;
 
 import com.zp.myeshopinventory.entity.Inventory;
+import com.zp.myeshopinventory.model.ProductInfo;
+import com.zp.myeshopinventory.model.ShopInfo;
 
 /**
  * @Author zp
@@ -9,4 +11,17 @@ import com.zp.myeshopinventory.entity.Inventory;
 public interface CacheService {
     Inventory saveLocalCache(Inventory inventory);
     Inventory getLocalCache(int id);
+
+    ProductInfo saveProductInfo2LocalCache(ProductInfo productInfo);
+
+    void saveProductInfo2RedisCache(ProductInfo productInfo);
+
+    ShopInfo saveShopInfo2LocalCache(ShopInfo shopInfo);
+
+    void saveShopInfo2RedisCache(ShopInfo shopInfo);
+
+    String getProductInfoFromLocalCache(Long productId);
+
+    String getShopInfoFromLocalCache(Long shopId);
+
 }
