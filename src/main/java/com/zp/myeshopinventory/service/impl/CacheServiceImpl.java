@@ -15,7 +15,7 @@ import redis.clients.jedis.Jedis;
  * @Author zp
  * @create 2020/10/19 12:26
  */
-@Service
+@Service("cacheService")
 public class CacheServiceImpl implements CacheService {
 
     private static final String CACHE_NAME = "local";
@@ -62,13 +62,13 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     @Cacheable(value = CACHE_NAME, key = "'productInfo_'+ #productId")
-    public String getProductInfoFromLocalCache(Long productId) {
+    public ProductInfo getProductInfoFromLocalCache(Long productId) {
         return null;
     }
 
     @Override
     @Cacheable(value = CACHE_NAME, key = "'shopInfo_'+ #shopId")
-    public String getShopInfoFromLocalCache(Long shopId) {
+    public ShopInfo getShopInfoFromLocalCache(Long shopId) {
         return null;
     }
 }

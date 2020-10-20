@@ -20,8 +20,8 @@ public interface CacheService {
 
     void saveShopInfo2RedisCache(ShopInfo shopInfo);
 
-    String getProductInfoFromLocalCache(Long productId);
+    ProductInfo getProductInfoFromLocalCache(Long productId);
 
-    String getShopInfoFromLocalCache(Long shopId);
+    ShopInfo getShopInfoFromLocalCache(Long shopId);
 
 }

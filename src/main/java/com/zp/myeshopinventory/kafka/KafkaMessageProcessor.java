@@ -23,6 +23,7 @@ public class KafkaMessageProcessor implements Runnable {
         this.kafkaStream = kafkaStream;
         this.cacheService = (CacheService) SpringContext.getApplicationContext()
                 .getBean("cacheService");
+        System.out.println(cacheService);
     }
 
     @Override

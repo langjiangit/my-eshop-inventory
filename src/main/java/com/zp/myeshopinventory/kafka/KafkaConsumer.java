@@ -47,12 +47,15 @@ public class KafkaConsumer implements Runnable {
 	 */
 	private static ConsumerConfig createConsumerConfig() {
         Properties props = new Properties();
-        props.put("zookeeper.connect", "192.168.129.146:2181");
+        props.put("zookeeper.connect", "192.168.129.147:2181");
         props.put("group.id", "eshop-cache-group");
         props.put("zookeeper.session.timeout.ms", "40000");
         props.put("zookeeper.sync.time.ms", "2000");
         props.put("auto.commit.interval.ms", "1000");
-        props.put("rebalance.backoff.ms", "2000");
+        // ConsumerRebalanceFailedException异常解决方法：
+		// 确保rebalance.backoff.ms * rebalance.max.retries的时间大于zookeeper.session.timeout.ms
+        props.put("rebalance.backoff.ms", "5000");
+        props.put("rebalance.max.retries", "10");
         return new ConsumerConfig(props);
     }
 
