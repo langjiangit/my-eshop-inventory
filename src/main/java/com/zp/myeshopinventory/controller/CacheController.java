@@ -56,7 +56,7 @@ public class CacheController {
 
         if(productInfo == null) {
             // 就需要从数据源重新拉去数据，重建缓存，但是这里先不讲
-            String productInfoJSON = "{\"id\": 1, \"name\": \"iphone7手机\", \"updateTime\": \"2018-01-01 12:00:01\", \"price\": 5599, \"pictureList\":\"a.jpg,b.jpg\", \"specification\": \"iphone7的规格\", \"service\": \"iphone7的售后服务\", \"color\": \"红色,白色,黑色\", \"size\": \"5.5\", \"shopId\": 1}";
+            String productInfoJSON = "{\"id\": 4, \"name\": \"iphone7手机\", \"updateTime\": \"2018-01-01 12:01:01\", \"price\": 5599, \"pictureList\":\"a.jpg,b.jpg\", \"specification\": \"iphone7的规格\", \"service\": \"iphone7的售后服务\", \"color\": \"红色,白色,黑色\", \"size\": \"5.5\", \"shopId\": 1}";
             productInfo = JSONObject.parseObject(productInfoJSON, ProductInfo.class);
             // 将数据推送到一个内存队列中
             RebuildCacheQueue rebuildCacheQueue = RebuildCacheQueue.getInstance();

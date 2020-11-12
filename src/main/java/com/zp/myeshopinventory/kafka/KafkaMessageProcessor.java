@@ -10,6 +10,7 @@ import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * kafka消息处理线程
@@ -70,10 +71,8 @@ public class KafkaMessageProcessor implements Runnable {
         // 你从一个课程里，还是学到的是里面围绕的讲解的一些核心的知识
         // 缓存架构：高并发、高性能、海量数据，等场景
 
-        String productInfoJSON = "{\"id\": 1, \"name\": \"iphone7手机\", \"updateTime\": \"2018-01-01 12:00:01\", \"price\": 5599, \"pictureList\":\"a.jpg,b.jpg\", \"specification\": \"iphone7的规格\", \"service\": \"iphone7的售后服务\", \"color\": \"红色,白色,黑色\", \"size\": \"5.5\", \"shopId\": 1}";
+        String productInfoJSON = "{\"id\": 4, \"name\": \"iphone7手机\", \"updateTime\": \"2018-01-01 12:00:01\", \"price\": 5599, \"pictureList\":\"a.jpg,b.jpg\", \"specification\": \"iphone7的规格\", \"service\": \"iphone7的售后服务\", \"color\": \"红色,白色,黑色\", \"size\": \"5.5\", \"shopId\": 1}";
         ProductInfo productInfo = JSONObject.parseObject(productInfoJSON, ProductInfo.class);
-        cacheService.saveProductInfo2LocalCache(productInfo);
-        System.out.println("===================获取刚保存到本地缓存的商品信息：" + cacheService.getProductInfoFromLocalCache(productId));
 
         // 将数据写入redis之前，先获取分布式锁
         ZookeeperSession zookeeperSession = ZookeeperSession.getInstance();
@@ -86,17 +85,27 @@ public class KafkaMessageProcessor implements Runnable {
             // 如果redis中数据不为空，判断更新时间
             String updateTimeNow = productInfo.getUpdateTime();
             String updateTimeRedis = productInfo1.getUpdateTime();
-            LocalDateTime timeNow = LocalDateTime.parse(updateTimeNow);
-            LocalDateTime timeRedis = LocalDateTime.parse(updateTimeRedis);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime timeNow = LocalDateTime.parse(updateTimeNow, dtf);
+            LocalDateTime timeRedis = LocalDateTime.parse(updateTimeRedis, dtf);
 
-            if (timeNow.compareTo(timeRedis) > 0) {
+            if (timeNow.compareTo(timeRedis) < 0) {
                 // 现有数据中的updateTime新于redis数据中的updateTime时，才更新redis
-                cacheService.saveProductInfo2RedisCache(productInfo);
-                System.out.println("现数据时间在redis中时间之后！更新redis完成");
+                zookeeperSession.releaseLock(productId);
+                return;
             }
-        } else {
-            cacheService.saveProductInfo2RedisCache(productInfo);
         }
+
+        try {
+            // 模拟并发测试
+            Thread.sleep(10 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        cacheService.saveProductInfo2LocalCache(productInfo);
+        System.out.println("===================获取刚保存到本地缓存的商品信息：" + cacheService.getProductInfoFromLocalCache(productId));
+        cacheService.saveProductInfo2RedisCache(productInfo);
 
         // 释放锁
         zookeeperSession.releaseLock(productId);

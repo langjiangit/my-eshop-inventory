@@ -6,6 +6,7 @@ import com.zp.myeshopinventory.spring.SpringContext;
 import com.zp.myeshopinventory.zk.ZookeeperSession;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * 缓存重建线程
@@ -33,8 +34,9 @@ public class RebuildCacheThread implements Runnable {
             // 如果redis中数据不为空，判断更新时间
             String updateTimeNow = productInfo.getUpdateTime();
             String updateTimeRedis = productInfo1.getUpdateTime();
-            LocalDateTime timeNow = LocalDateTime.parse(updateTimeNow);
-            LocalDateTime timeRedis = LocalDateTime.parse(updateTimeRedis);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime timeNow = LocalDateTime.parse(updateTimeNow, dtf);
+            LocalDateTime timeRedis = LocalDateTime.parse(updateTimeRedis, dtf);
 
             if (timeNow.compareTo(timeRedis) > 0) {
                 // 现有数据中的updateTime新于redis数据中的updateTime时，才更新redis
