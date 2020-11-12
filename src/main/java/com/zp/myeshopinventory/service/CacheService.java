@@ -22,6 +22,10 @@ public interface CacheService {
 
     ProductInfo getProductInfoFromLocalCache(Long productId);
 
+    ProductInfo getProductInfoFromRedis(Long productId);
+
     ShopInfo getShopInfoFromLocalCache(Long shopId);
+
+    ShopInfo getShopInfoFromRedis(Long shopId);
 
 }

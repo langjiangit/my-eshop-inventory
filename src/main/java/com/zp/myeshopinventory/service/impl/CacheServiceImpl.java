@@ -1,5 +1,6 @@
 package com.zp.myeshopinventory.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zp.myeshopinventory.entity.Inventory;
 import com.zp.myeshopinventory.model.ProductInfo;
@@ -67,8 +68,30 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
+    public ProductInfo getProductInfoFromRedis(Long productId) {
+        Jedis jedis = JedisPoolUtil.getInstance().getResource();
+        String json = jedis.get("productInfo_" + productId);
+        jedis.close();
+        if(json != null){
+            return JSONObject.parseObject(json, ProductInfo.class);
+        }
+        return null;
+    }
+
+    @Override
     @Cacheable(value = CACHE_NAME, key = "'shopInfo_'+ #shopId")
     public ShopInfo getShopInfoFromLocalCache(Long shopId) {
+        return null;
+    }
+
+    @Override
+    public ShopInfo getShopInfoFromRedis(Long shopId) {
+        Jedis jedis = JedisPoolUtil.getInstance().getResource();
+        String json = jedis.get("shopInfo_" + shopId);
+        jedis.close();
+        if(json != null){
+            return JSONObject.parseObject(json, ShopInfo.class);
+        }
         return null;
     }
 }

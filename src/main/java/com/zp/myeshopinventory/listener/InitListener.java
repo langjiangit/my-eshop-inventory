@@ -1,6 +1,7 @@
 package com.zp.myeshopinventory.listener;
 
 import com.zp.myeshopinventory.kafka.KafkaConsumer;
+import com.zp.myeshopinventory.rebuild.RebuildCacheThread;
 import com.zp.myeshopinventory.spring.SpringContext;
 import com.zp.myeshopinventory.thread.RequestProcessorThreadPool;
 import org.springframework.context.ApplicationContext;
@@ -32,6 +33,7 @@ public class InitListener implements ServletContextListener {
         // kafka初始化监听器
         // 启动kafka的消费者
         new Thread(new KafkaConsumer("cache-message")).start();
+        new Thread(new RebuildCacheThread()).start();
 
     }
 
